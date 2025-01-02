@@ -3,12 +3,15 @@ const jobRoleSelect = document.querySelector("#title");
 const otherJobRoleInput = document.querySelector("#other-job-role");
 const designSelect = document.querySelector("#design");
 const colorSelect = document.querySelector("#color");
+const activitiesSet = document.querySelector("#activities");
+const totalActivitiesCost = document.querySelector("#activities-cost");
+let total = 0;
 
 
 // Focus on the first form field
 nameInput.focus();
 
-// Only show text box when other job role is selected
+// Only show the "other" text box when "other" job role is selected
 otherJobRoleInput.hidden = true;
 jobRoleSelect.addEventListener("change", () => {
                     
@@ -40,4 +43,21 @@ designSelect.addEventListener("change", () => {
             colorValue.removeAttribute("selected", true)
         }
     }
+});
+
+
+// Add up the total cost of activities
+activitiesSet.addEventListener("change", () => {
+   
+    // get the cost of the current activity and convert it to a number
+    const currentActivity = Number(event.target.getAttribute("data-cost"));
+    
+    // If box is checked, add
+    if(event.target.checked) {
+        total += currentActivity;
+    // If box is not checked, subtract
+    } else {
+        total -= currentActivity;
+    }
+    totalActivitiesCost.innerHTML= `<p>Total $${total}</p>`;
 });
