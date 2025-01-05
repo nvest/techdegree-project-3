@@ -6,6 +6,7 @@ const designSelect = document.querySelector("#design");
 const colorSelect = document.querySelector("#color");
 
 const activitiesSet = document.querySelector("#activities");
+const activitiesBox = document.querySelector("#activities-box");
 const totalActivitiesCost = document.querySelector("#activities-cost");
 let total = 0;
 
@@ -20,9 +21,13 @@ const zipCodeInput = document.querySelector("#zip");
 const cvvInput = document.querySelector("#cvv");
 const conferenceForm = document.querySelector("form");
 
+const activitiesCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
+
 
 // Focus on the first form field
 nameInput.focus();
+
+
 
 // Only show the "other" text box when "other" job role is selected
 otherJobRoleInput.hidden = true;
@@ -33,7 +38,9 @@ jobRoleSelect.addEventListener("change", () => {
     } else {
         otherJobRoleInput.hidden = true;
     }
+
 });
+
 
 
 // Show color options only for their available designs
@@ -56,7 +63,9 @@ designSelect.addEventListener("change", () => {
             colorValue.removeAttribute("selected", true)
         }
     }
+
 });
+
 
 
 // Add up the total cost of activities
@@ -72,8 +81,10 @@ activitiesSet.addEventListener("change", () => {
     } else {
         total -= currentActivity;
     }
-    totalActivitiesCost.innerHTML= `<p>Total $${total}</p>`;
+    totalActivitiesCost.innerHTML= `Total $${total}`;
+
 });
+
 
 
 // Show only the payment option fields for the method that is selected
@@ -103,64 +114,115 @@ paymentSelect.addEventListener("change", () => {
 });
 
 
-// Validate required form fields
-conferenceForm.addEventListener("submit", () => {
-    
-    // The "Name" field cannot be blank or empty.
+
+// Prevent form from submitting if something is invalid
+function isValid(input) {
+    if(input == false) {
+        event.preventDefault();
+    } 
+}
+
+
+
+// Add error messages
+function errorMessage(element, validation) {
+    if (validation == false) {
+        // Add the "not-valid" className to the element’s parent element.
+        // Remove the "valid" className from the element’s parent element.
+        // Display the last child of the element’s parent element. The lastElementChild property will be helpful here.
+        element.parentNode.classList.add("not-valid");
+        element.parentNode.classList.remove("valid");
+        element.parentNode.lastElementChild.style.display = "block";
+    } else {
+        element.parentNode.classList.remove("not-valid");
+        element.parentNode.classList.add("valid");
+        element.parentNode.lastElementChild.style.display = "none";
+    }
+}
+
+
+
+
+
+// The "Name" field cannot be blank or empty.
+function isValidName () {
     const nameValue = nameInput.value
     const nameValidation = /^\s*\S.*$/.test(nameValue);
-    if(nameValidation == false) {
-        event.preventDefault();
-    }
-    
-    // The "Email Address" field must contain a correctly formatted email address. abc@defg.hijk
+    isValid(nameValidation);
+    errorMessage(nameInput, nameValidation);
+}
+
+// The "Email Address" field must contain a correctly formatted email address. abc@defg.hijk
+function isValidEmail () {
     const emailValue = emailInput.value
     const emailValidation = /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/.test(emailValue);
-    if(emailValidation == false) {
-        event.preventDefault();
-    }
+    isValid(emailValidation);
+    errorMessage(emailInput, emailValidation);
+}
 
-    // The "Register for Activities" section must have at least one activity selected.
-    const activitiesBoxes = activitiesSet.querySelectorAll('.activities input[type="checkbox"]');
+// The "Register for Activities" section must have at least one activity selected.
+function isActivityChecked () {
     let activityChecked = false;
-    for (let i = 0; i < activitiesBoxes.length; i++) {
-        if (activitiesBoxes[i].checked) {
+    for (let i = 0; i < activitiesCheckboxes.length; i++) {
+        if (activitiesCheckboxes[i].checked) {
             activityChecked = true;
         } 
     }
-    if(activityChecked == false) {
-        event.preventDefault();
-    }
+    isValid(activityChecked);
+    errorMessage(activitiesBox, activityChecked);
+}
+
+// The "Card number" field must contain a 13 - 16 digit credit card number without dashes or spaces.
+function isValidCard () {
+    const cardValue = cardNumberInput.value
+    const cardValidation = /^\d{13,16}$/.test(cardValue);
+    isValid(cardValidation);
+    errorMessage(cardNumberInput, cardValidation);
+}
+
+// The "Zip code" field must contain a 5-digit number.
+function isValidZip () {
+    const zipValue = zipCodeInput.value
+    const zipValidation = /^\d{5}$/.test(zipValue);
+    isValid(zipValidation);
+    errorMessage(zipCodeInput, zipValidation);
+}
+
+// The "CVV" field must contain a 3-digit number.
+function isValidCvv () {
+    const cvvValue = cvvInput.value
+    const cvvValidation = /^\d{3}$/.test(cvvValue);
+    isValid(cvvValidation);
+    errorMessage(cvvInput, cvvValidation);
+}
+    
+
+
+// Validate all required form fields when someone clicks "Register"
+conferenceForm.addEventListener("submit", () => {
+    
+    isValidName();
+    isValidEmail();
+    isActivityChecked();
 
     // If and only if credit card is the selected payment method:
     if(paymentSelect.value == creditCard.id) {
-
-        // The "Card number" field must contain a 13 - 16 digit credit card number without dashes or spaces.
-        const cardValue = cardNumberInput.value
-        const cardValidation = /^\d{13,16}$/.test(cardValue);
-        if(cardValidation == false) {
-            event.preventDefault();
-        }
-
-        // The "Zip code" field must contain a 5-digit number.
-        const zipValue = zipCodeInput.value
-        const zipValidation = /^\d{5}$/.test(zipValue);
-        if(zipValidation == false) {
-            event.preventDefault();
-        }
-
-        // The "CVV" field must contain a 3-digit number.
-        const cvvValue = cvvInput.value
-        const cvvValidation = /^\d{3}$/.test(cvvValue);
-        if(cvvValidation == false) {
-            event.preventDefault();
-        }
-    
-
+        isValidCard();
+        isValidZip();
+        isValidCvv();
     }
         
-
-   
-
 });
+
+
+for (let i = 0; i < activitiesCheckboxes.length; i++) {
+    activitiesCheckboxes[i].addEventListener("focus", () => { 
+        activitiesCheckboxes[i].parentNode.classList.add("focus");
+    });
+    activitiesCheckboxes[i].addEventListener("blur", () => { 
+        activitiesCheckboxes[i].parentNode.classList.remove("focus");
+    });
+}
+
+
 
