@@ -5,9 +5,9 @@ const otherJobRoleInput = document.querySelector("#other-job-role");
 const designSelect = document.querySelector("#design");
 const colorSelect = document.querySelector("#color");
 
-const activitiesSet = document.querySelector("#activities");
 const activitiesBox = document.querySelector("#activities-box");
 const totalActivitiesCost = document.querySelector("#activities-cost");
+const activitiesCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
 let total = 0;
 
 const paymentSelect = document.querySelector("#payment");
@@ -21,7 +21,7 @@ const zipCodeInput = document.querySelector("#zip");
 const cvvInput = document.querySelector("#cvv");
 const conferenceForm = document.querySelector("form");
 
-const activitiesCheckboxes = document.querySelectorAll('.activities input[type="checkbox"]');
+
 
 
 // Focus on the first form field
@@ -69,7 +69,7 @@ designSelect.addEventListener("change", () => {
 
 
 // Add up the total cost of activities
-activitiesSet.addEventListener("change", () => {
+activitiesBox.addEventListener("change", () => {
    
     // get the cost of the current activity and convert it to a number
     const currentActivity = Number(event.target.getAttribute("data-cost"));
