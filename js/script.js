@@ -215,6 +215,8 @@ conferenceForm.addEventListener("submit", () => {
 });
 
 
+
+// show focus indicator when tabbing through checkboxes
 for (let i = 0; i < activitiesCheckboxes.length; i++) {
     activitiesCheckboxes[i].addEventListener("focus", () => { 
         activitiesCheckboxes[i].parentNode.classList.add("focus");
